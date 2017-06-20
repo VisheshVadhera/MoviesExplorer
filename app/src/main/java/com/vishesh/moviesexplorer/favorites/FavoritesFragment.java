@@ -1,4 +1,4 @@
-package com.vishesh.moviesexplorer;
+package com.vishesh.moviesexplorer.favorites;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,7 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.vishesh.moviesexplorer.dashboard.SearchResultsAdapter;
+import com.vishesh.moviesexplorer.R;
+import com.vishesh.moviesexplorer.searchresults.SearchResultsAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -19,7 +20,9 @@ import butterknife.Unbinder;
  * Created by vishesh on 19/6/17.
  */
 
-public class FavoritesFragment extends Fragment {
+public class FavoritesFragment
+        extends Fragment
+        implements SearchResultsAdapter.ViewHolder.ClickListener{
 
     @BindView(R.id.recycler_view_favorites)
     RecyclerView recyclerViewFavorites;
@@ -32,7 +35,7 @@ public class FavoritesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorites, container, false);
         unbinder = ButterKnife.bind(this, view);
-        searchResultsAdapter = new SearchResultsAdapter(getActivity().getApplicationContext());
+        searchResultsAdapter = new SearchResultsAdapter(getActivity(), this);
         recyclerViewFavorites.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
         recyclerViewFavorites.setAdapter(searchResultsAdapter);
         return view;
@@ -46,5 +49,10 @@ public class FavoritesFragment extends Fragment {
 
     public static FavoritesFragment newInstance() {
         return new FavoritesFragment();
+    }
+
+    @Override
+    public void handleRecyclerViewClick(int position) {
+
     }
 }

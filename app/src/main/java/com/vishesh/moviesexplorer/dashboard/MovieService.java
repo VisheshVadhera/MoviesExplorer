@@ -1,5 +1,7 @@
 package com.vishesh.moviesexplorer.dashboard;
 
+import java.util.List;
+
 import io.reactivex.Single;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -11,6 +13,6 @@ import retrofit2.http.Query;
 public interface MovieService {
 
     @GET("api.php")
-    Single<MovieResult> searchMovies(@Query("title") String title);
+    Single<List<MovieResult>> searchMoviesByDirector(@Query("director") String title);
 
 }

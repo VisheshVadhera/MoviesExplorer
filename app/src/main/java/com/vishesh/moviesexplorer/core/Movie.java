@@ -1,74 +1,42 @@
-package com.vishesh.moviesexplorer.dashboard;
+package com.vishesh.moviesexplorer.core;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+/**
+ * Created by vishesh on 20/6/17.
+ */
+@Entity
+public class Movie {
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+    @PrimaryKey
+    private int uid;
 
-public class MovieResult implements Parcelable{
-
-    @SerializedName("unit")
-    @Expose
+    @ColumnInfo(name = "unit")
     private Integer unit;
-    @SerializedName("show_id")
-    @Expose
+    @ColumnInfo(name = "show_id")
     private Integer showId;
-    @SerializedName("show_title")
-    @Expose
+    @ColumnInfo(name = "show_title")
     private String showTitle;
-    @SerializedName("release_year")
-    @Expose
+    @ColumnInfo(name = "release_year")
     private String releaseYear;
-    @SerializedName("rating")
-    @Expose
+    @ColumnInfo(name = "rating")
     private String rating;
-    @SerializedName("category")
-    @Expose
+    @ColumnInfo(name = "category")
     private String category;
-    @SerializedName("show_cast")
-    @Expose
+    @ColumnInfo(name = "show_cast")
     private String showCast;
-    @SerializedName("director")
-    @Expose
+    @ColumnInfo(name = "director")
     private String director;
-    @SerializedName("summary")
-    @Expose
+    @ColumnInfo(name = "summary")
     private String summary;
-    @SerializedName("poster")
-    @Expose
+    @ColumnInfo(name = "poster")
     private String poster;
-    @SerializedName("mediatype")
-    @Expose
+    @ColumnInfo(name = "mediatype")
     private Integer mediatype;
-    @SerializedName("runtime")
-    @Expose
+    @ColumnInfo(name = "runtime")
     private String runtime;
-
-    protected MovieResult(Parcel in) {
-        showTitle = in.readString();
-        releaseYear = in.readString();
-        rating = in.readString();
-        category = in.readString();
-        showCast = in.readString();
-        director = in.readString();
-        summary = in.readString();
-        poster = in.readString();
-        runtime = in.readString();
-    }
-
-    public static final Creator<MovieResult> CREATOR = new Creator<MovieResult>() {
-        @Override
-        public MovieResult createFromParcel(Parcel in) {
-            return new MovieResult(in);
-        }
-
-        @Override
-        public MovieResult[] newArray(int size) {
-            return new MovieResult[size];
-        }
-    };
 
     public Integer getUnit() {
         return unit;
@@ -166,21 +134,11 @@ public class MovieResult implements Parcelable{
         this.runtime = runtime;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public int getUid() {
+        return uid;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(showTitle);
-        dest.writeString(releaseYear);
-        dest.writeString(rating);
-        dest.writeString(category);
-        dest.writeString(showCast);
-        dest.writeString(director);
-        dest.writeString(summary);
-        dest.writeString(poster);
-        dest.writeString(runtime);
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 }

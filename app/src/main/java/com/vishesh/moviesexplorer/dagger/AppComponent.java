@@ -1,6 +1,7 @@
 package com.vishesh.moviesexplorer.dagger;
 
 import com.vishesh.moviesexplorer.dashboard.DashboardActivity;
+import com.vishesh.moviesexplorer.moviedetails.MovieDetailsActivity;
 
 import javax.inject.Singleton;
 
@@ -15,4 +16,5 @@ public interface AppComponent {
 
     void inject(DashboardActivity dashboardActivity);
 
+    void inject(MovieDetailsActivity movieDetailsActivity);
 }

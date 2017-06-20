@@ -1,4 +1,4 @@
-package com.vishesh.moviesexplorer.dashboard;
+package com.vishesh.moviesexplorer.searchresults;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,35 +8,31 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.vishesh.moviesexplorer.R;
+import com.vishesh.moviesexplorer.dashboard.MovieResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-/**
- * Created by vishesh on 20/6/17.
- */
+import butterknife.OnClick;
 
 public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.ViewHolder> {
 
-    private Context context;
+    private final Context context;
     private final List<MovieResult> movieResults;
+    private ViewHolder.ClickListener clickListener;
 
-    public SearchResultsAdapter(Context context) {
-        this(context, new ArrayList<MovieResult>());
-    }
-
-    SearchResultsAdapter(Context context, List<MovieResult> movieResults) {
+    public SearchResultsAdapter(Context context, ViewHolder.ClickListener clickListener) {
         this.context = context;
-        this.movieResults = movieResults;
+        this.movieResults = new ArrayList<>();
+        this.clickListener = clickListener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_search_results, parent);
-        return new ViewHolder(view);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_search_results, parent, false);
+        return new ViewHolder(view, clickListener);
     }
 
     @Override
@@ -54,17 +50,18 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         return movieResults.size();
     }
 
-    void addMovieResult(MovieResult movieResult) {
-        movieResults.add(movieResults.size(), movieResult);
-        notifyItemInserted(movieResults.size());
-    }
-
     void addMovieResults(List<MovieResult> extraMovieResults) {
         movieResults.addAll(extraMovieResults);
-        notifyItemRangeInserted(movieResults.size(), movieResults.size() + extraMovieResults.size());
+        notifyDataSetChanged();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    public List<MovieResult> getSearchResults() {
+        return movieResults;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        private final ClickListener clickListener;
 
         @BindView(R.id.text_title)
         TextView textTitle;
@@ -75,9 +72,20 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         @BindView(R.id.text_runtime)
         TextView textRuntime;
 
-        ViewHolder(View itemView) {
+        ViewHolder(View itemView, ClickListener clickListener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            this.clickListener = clickListener;
+        }
+
+        @OnClick(R.id.relative_layout_search_item)
+        void onClick() {
+            clickListener.handleRecyclerViewClick(this.getLayoutPosition());
+        }
+
+        public interface ClickListener {
+            void handleRecyclerViewClick(int position);
         }
     }
+
 }

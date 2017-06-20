@@ -7,11 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.vishesh.moviesexplorer.FavoritesFragment;
+import com.vishesh.moviesexplorer.favorites.FavoritesFragment;
 import com.vishesh.moviesexplorer.MainApplication;
 import com.vishesh.moviesexplorer.R;
-import com.vishesh.moviesexplorer.SectionsPagerAdapter;
+import com.vishesh.moviesexplorer.searchresults.SearchResultsFragment;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -94,10 +97,15 @@ public class DashboardActivity
     }
 
     @Override
-    public void showSearchResult(MovieResult movieResult) {
+    public void showSearchResult(List<MovieResult> movieResult) {
         SearchResultsFragment searchResultsFragment = (SearchResultsFragment)
                 sectionsPagerAdapter.getItem(SEARCH_RESULTS_FRAGMENT_POSITION);
-        searchResultsFragment.addSearchResult(movieResult);
+        searchResultsFragment.addSearchResults(movieResult);
+    }
+
+    @Override
+    public void showError(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
 }
