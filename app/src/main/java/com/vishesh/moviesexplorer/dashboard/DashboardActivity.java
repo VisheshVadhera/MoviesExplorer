@@ -50,10 +50,10 @@ public class DashboardActivity
         unbinder = ButterKnife.bind(this);
         ((MainApplication) getApplication()).getInjector().inject(this);
         presenter.setView(this);
-        setupTabs();
+        initializeTabs();
     }
 
-    void setupTabs() {
+    void initializeTabs() {
 
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         sectionsPagerAdapter.addFragment(SEARCH_RESULTS_FRAGMENT_POSITION, SearchResultsFragment.newInstance());
