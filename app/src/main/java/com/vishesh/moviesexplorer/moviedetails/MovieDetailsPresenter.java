@@ -48,12 +48,11 @@ public class MovieDetailsPresenter {
 
                         @Override
                         public void onComplete() {
-
+                            view.showMessage("Added to fav!");
                         }
 
                         @Override
                         public void onError(@NonNull Throwable e) {
-                            view.showMessage("Added to fav!");
                         }
                     });
         }

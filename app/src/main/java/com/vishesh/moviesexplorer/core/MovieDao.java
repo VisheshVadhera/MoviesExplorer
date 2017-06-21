@@ -18,6 +18,9 @@ public interface MovieDao {
     @Query("SELECT * FROM movies")
     Flowable<List<Movie>> getAllMovies();
 
+    @Query("SELECT * from movies WHERE director = :directorName AND show_title = :title LIMIT 1")
+    Movie getMovieByDirector(String directorName, String title);
+
     @Insert
     void insert(Movie movie);
 }

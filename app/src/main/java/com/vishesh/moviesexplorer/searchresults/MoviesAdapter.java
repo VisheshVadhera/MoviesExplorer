@@ -69,7 +69,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    public List<Movie> getSearchResults() {
+    public List<Movie> getMovies() {
         return movies;
     }
 

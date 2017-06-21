@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.vishesh.moviesexplorer.MainApplication;
 import com.vishesh.moviesexplorer.R;
 import com.vishesh.moviesexplorer.core.Movie;
+import com.vishesh.moviesexplorer.moviedetails.MovieDetailsActivity;
 import com.vishesh.moviesexplorer.searchresults.MoviesAdapter;
 
 import java.util.List;
@@ -70,7 +71,8 @@ public class FavoritesFragment
 
     @Override
     public void handleRecyclerViewClick(int position) {
-
+        Movie movie = moviesAdapter.getMovies().get(position);
+        startActivity(MovieDetailsActivity.createIntent(getActivity(), movie));
     }
 
     @Override
