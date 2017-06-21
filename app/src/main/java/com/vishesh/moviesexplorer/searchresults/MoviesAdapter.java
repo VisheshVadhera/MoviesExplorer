@@ -5,10 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.vishesh.moviesexplorer.R;
-import com.vishesh.moviesexplorer.dashboard.MovieResult;
+import com.vishesh.moviesexplorer.core.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,46 +19,58 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdapter.ViewHolder> {
+public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
 
     private final Context context;
-    private final List<MovieResult> movieResults;
+    private final List<Movie> movies;
     private ViewHolder.ClickListener clickListener;
 
-    public SearchResultsAdapter(Context context, ViewHolder.ClickListener clickListener) {
+    MoviesAdapter(Context context, ViewHolder.ClickListener clickListener) {
         this.context = context;
-        this.movieResults = new ArrayList<>();
+        this.movies = new ArrayList<>();
+        this.clickListener = clickListener;
+    }
+
+    public MoviesAdapter(Context context,
+                         List<Movie> movies,
+                         ViewHolder.ClickListener clickListener) {
+        this.context = context;
+        this.movies = movies;
         this.clickListener = clickListener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_search_results, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_movie_item, parent, false);
         return new ViewHolder(view, clickListener);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        MovieResult movieResult = movieResults.get(position);
+        Movie movie = movies.get(position);
 
-        holder.textCategory.setText(movieResult.getCategory());
-        holder.textRuntime.setText(movieResult.getRuntime());
-        holder.textTitle.setText(movieResult.getShowTitle());
-        holder.textYear.setText(movieResult.getReleaseYear());
+        holder.textCategory.setText(movie.getCategory());
+        holder.textRuntime.setText(movie.getRuntime());
+        holder.textTitle.setText(movie.getShowTitle());
+        holder.textYear.setText(movie.getReleaseYear());
+
+        Picasso.with(context)
+                .load(movie.getPoster())
+                .into(holder.imagePoster);
     }
 
     @Override
     public int getItemCount() {
-        return movieResults.size();
+        return movies.size();
     }
 
-    void addMovieResults(List<MovieResult> extraMovieResults) {
-        movieResults.addAll(extraMovieResults);
+    void addMovieResults(List<Movie> extraMovies) {
+        movies.addAll(extraMovies);
         notifyDataSetChanged();
     }
 
-    public List<MovieResult> getSearchResults() {
-        return movieResults;
+    public List<Movie> getSearchResults() {
+        return movies;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -71,6 +85,8 @@ public class SearchResultsAdapter extends RecyclerView.Adapter<SearchResultsAdap
         TextView textCategory;
         @BindView(R.id.text_runtime)
         TextView textRuntime;
+        @BindView(R.id.image_poster)
+        ImageView imagePoster;
 
         ViewHolder(View itemView, ClickListener clickListener) {
             super(itemView);

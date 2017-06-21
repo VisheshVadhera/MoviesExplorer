@@ -6,6 +6,8 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
+
 
 /**
  * Created by vishesh on 20/6/17.
@@ -13,8 +15,8 @@ import java.util.List;
 @Dao
 public interface MovieDao {
 
-    @Query("SELECT * FROM user")
-    List<Movie> getAllMovies();
+    @Query("SELECT * FROM movies")
+    Flowable<List<Movie>> getAllMovies();
 
     @Insert
     void insert(Movie movie);

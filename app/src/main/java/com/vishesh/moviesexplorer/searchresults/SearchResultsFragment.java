@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.vishesh.moviesexplorer.R;
-import com.vishesh.moviesexplorer.dashboard.MovieResult;
+import com.vishesh.moviesexplorer.core.Movie;
 import com.vishesh.moviesexplorer.moviedetails.MovieDetailsActivity;
 
 import java.util.List;
@@ -23,13 +23,13 @@ import butterknife.Unbinder;
 
 public class SearchResultsFragment
         extends Fragment
-        implements SearchResultsAdapter.ViewHolder.ClickListener {
+        implements MoviesAdapter.ViewHolder.ClickListener {
 
     @BindView(R.id.recycler_view_results)
     RecyclerView recyclerViewResults;
 
     private Unbinder unbinder;
-    private SearchResultsAdapter searchResultsAdapter;
+    private MoviesAdapter moviesAdapter;
 
     public static SearchResultsFragment newInstance() {
         return new SearchResultsFragment();
@@ -45,13 +45,13 @@ public class SearchResultsFragment
     }
 
     private void initRecyclerAdapter() {
-        searchResultsAdapter = new SearchResultsAdapter(getActivity(), this);
+        moviesAdapter = new MoviesAdapter(getActivity(), this);
         recyclerViewResults.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerViewResults.setAdapter(searchResultsAdapter);
+        recyclerViewResults.setAdapter(moviesAdapter);
     }
 
-    public void addSearchResults(List<MovieResult> movieResults) {
-        searchResultsAdapter.addMovieResults(movieResults);
+    public void addSearchResults(List<Movie> movies) {
+        moviesAdapter.addMovieResults(movies);
     }
 
     @Override
@@ -62,8 +62,8 @@ public class SearchResultsFragment
 
     @Override
     public void handleRecyclerViewClick(int position) {
-        MovieResult movieResult = searchResultsAdapter.getSearchResults().get(position);
-        Intent intent = MovieDetailsActivity.createIntent(getActivity(), movieResult);
+        Movie movie = moviesAdapter.getSearchResults().get(position);
+        Intent intent = MovieDetailsActivity.createIntent(getActivity(), movie);
         startActivity(intent);
     }
 }

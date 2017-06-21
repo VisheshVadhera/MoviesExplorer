@@ -8,13 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.iconics.IconicsDrawable;
 import com.squareup.picasso.Picasso;
 import com.vishesh.moviesexplorer.MainApplication;
 import com.vishesh.moviesexplorer.R;
-import com.vishesh.moviesexplorer.dashboard.MovieResult;
+import com.vishesh.moviesexplorer.core.Movie;
 
 import javax.inject.Inject;
 
@@ -27,7 +28,7 @@ public class MovieDetailsActivity
         extends AppCompatActivity
         implements MovieDetailsPresenter.MovieDetailsView {
 
-    private static final String EXTRA_MOVIE_RESULT = "EXTRA_MOVIE_RESULT";
+    private static final String EXTRA_MOVIE = "EXTRA_MOVIE";
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -52,15 +53,15 @@ public class MovieDetailsActivity
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
-    private MovieResult movieResult;
+    private Movie movie;
     private Unbinder unbinder;
 
     @Inject
     MovieDetailsPresenter movieDetailsPresenter;
 
-    public static Intent createIntent(Context context, MovieResult movieResult) {
+    public static Intent createIntent(Context context, Movie movie) {
         Intent intent = new Intent(context, MovieDetailsActivity.class);
-        intent.putExtra(EXTRA_MOVIE_RESULT, movieResult);
+        intent.putExtra(EXTRA_MOVIE, movie);
         return intent;
     }
 
@@ -77,41 +78,61 @@ public class MovieDetailsActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        movieResult = getIntent().getParcelableExtra(EXTRA_MOVIE_RESULT);
+        movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
         initializeViews();
     }
 
     private void initializeViews() {
-        textRuntime.setText(movieResult.getRuntime());
-        textSummary.setText(movieResult.getSummary());
-        textDirector.setText(movieResult.getDirector());
-        textCast.setText(movieResult.getShowCast());
-        textCategory.setText(movieResult.getCategory());
-        textRating.setText(movieResult.getRating());
-        textReleaseYear.setText(movieResult.getReleaseYear());
-        textTitle.setText(movieResult.getShowTitle());
+        textRuntime.setText(movie.getRuntime());
+        textSummary.setText(movie.getSummary());
+        textDirector.setText(movie.getDirector());
+        textCast.setText(movie.getShowCast());
+        textCategory.setText(movie.getCategory());
+        textRating.setText(movie.getRating());
+        textReleaseYear.setText(movie.getReleaseYear());
+        textTitle.setText(movie.getShowTitle());
 
         Picasso.with(this)
-                .load(movieResult.getPoster())
+                .load(movie.getPoster())
                 .into(imageMoviePoster);
 
+        initializeFab();
+    }
+
+    private void initializeFab() {
         IconicsDrawable drawable = new IconicsDrawable(this)
-                .icon(GoogleMaterial.Icon.gmd_favorite_border)
                 .sizeDp(16);
-        fab.setImageDrawable(drawable);
+
+        if (movie.isFavorite()) {
+            fab.setImageDrawable(drawable.icon(GoogleMaterial.Icon.gmd_favorite));
+            fab.setEnabled(false);
+        } else {
+            fab.setImageDrawable(drawable.icon(GoogleMaterial.Icon.gmd_favorite_border));
+        }
     }
 
     @OnClick(R.id.fab)
     void onClick() {
-        IconicsDrawable drawable = new IconicsDrawable(this)
-                .icon(GoogleMaterial.Icon.gmd_favorite)
-                .sizeDp(16);
-        fab.setImageDrawable(drawable);
+        movieDetailsPresenter.onFavoriteButtonClicked(movie);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    @Override
+    public void setButtonToFavorite() {
+        IconicsDrawable drawable = new IconicsDrawable(this)
+                .sizeDp(16)
+                .icon(GoogleMaterial.Icon.gmd_favorite);
+        fab.setImageDrawable(drawable);
+        fab.setEnabled(false);
+    }
+
+    @Override
+    public void showMessage(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 }

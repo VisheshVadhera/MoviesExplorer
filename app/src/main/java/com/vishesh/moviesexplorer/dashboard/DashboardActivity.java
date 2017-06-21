@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.vishesh.moviesexplorer.core.Movie;
 import com.vishesh.moviesexplorer.favorites.FavoritesFragment;
 import com.vishesh.moviesexplorer.MainApplication;
 import com.vishesh.moviesexplorer.R;
@@ -97,7 +98,7 @@ public class DashboardActivity
     }
 
     @Override
-    public void showSearchResult(List<MovieResult> movieResult) {
+    public void showSearchResult(List<Movie> movieResult) {
         SearchResultsFragment searchResultsFragment = (SearchResultsFragment)
                 sectionsPagerAdapter.getItem(SEARCH_RESULTS_FRAGMENT_POSITION);
         searchResultsFragment.addSearchResults(movieResult);

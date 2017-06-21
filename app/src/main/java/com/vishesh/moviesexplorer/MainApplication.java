@@ -5,6 +5,7 @@ import android.app.Application;
 import com.vishesh.moviesexplorer.dagger.ApiServiceModule;
 import com.vishesh.moviesexplorer.dagger.AppComponent;
 import com.vishesh.moviesexplorer.dagger.DaggerAppComponent;
+import com.vishesh.moviesexplorer.dagger.DatabaseModule;
 import com.vishesh.moviesexplorer.dagger.RetrofitModule;
 
 /**
@@ -30,6 +31,7 @@ public class MainApplication extends Application {
         appComponent = DaggerAppComponent.builder()
                 .retrofitModule(new RetrofitModule(getString(R.string.base_url)))
                 .apiServiceModule(new ApiServiceModule())
+                .databaseModule(new DatabaseModule(getApplicationContext()))
                 .build();
     }
 }

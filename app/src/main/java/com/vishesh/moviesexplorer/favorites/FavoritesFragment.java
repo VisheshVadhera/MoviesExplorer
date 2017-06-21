@@ -9,8 +9,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.vishesh.moviesexplorer.MainApplication;
 import com.vishesh.moviesexplorer.R;
-import com.vishesh.moviesexplorer.searchresults.SearchResultsAdapter;
+import com.vishesh.moviesexplorer.core.Movie;
+import com.vishesh.moviesexplorer.searchresults.MoviesAdapter;
+
+import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,23 +28,34 @@ import butterknife.Unbinder;
 
 public class FavoritesFragment
         extends Fragment
-        implements SearchResultsAdapter.ViewHolder.ClickListener{
+        implements MoviesAdapter.ViewHolder.ClickListener,
+        FavoritesPresenter.FavoritesView {
 
     @BindView(R.id.recycler_view_favorites)
     RecyclerView recyclerViewFavorites;
 
     private Unbinder unbinder;
-    private SearchResultsAdapter searchResultsAdapter;
+    private MoviesAdapter moviesAdapter;
+
+    @Inject
+    FavoritesPresenter favoritesPresenter;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorites, container, false);
         unbinder = ButterKnife.bind(this, view);
-        searchResultsAdapter = new SearchResultsAdapter(getActivity(), this);
-        recyclerViewFavorites.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext()));
-        recyclerViewFavorites.setAdapter(searchResultsAdapter);
+        ((MainApplication) getActivity().getApplication()).getInjector().inject(this);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        favoritesPresenter.setView(this);
+        favoritesPresenter.initialize();
     }
 
     @Override
@@ -54,5 +71,12 @@ public class FavoritesFragment
     @Override
     public void handleRecyclerViewClick(int position) {
 
+    }
+
+    @Override
+    public void setFavoriteMovies(List<Movie> movies) {
+        moviesAdapter = new MoviesAdapter(getActivity(), movies, this);
+        recyclerViewFavorites.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewFavorites.setAdapter(moviesAdapter);
     }
 }

@@ -6,8 +6,9 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.vishesh.moviesexplorer.core.Movie;
 
-public class MovieResult implements Parcelable{
+public class MovieResult implements Parcelable {
 
     @SerializedName("unit")
     @Expose
@@ -182,5 +183,23 @@ public class MovieResult implements Parcelable{
         dest.writeString(summary);
         dest.writeString(poster);
         dest.writeString(runtime);
+    }
+
+    public Movie convertMovieResultToMovie(MovieResult movieResult, boolean isFavorite) {
+        Movie movie = new Movie();
+        movie.setCategory(movieResult.getCategory());
+        movie.setDirector(movieResult.getDirector());
+        movie.setMediatype(movieResult.getMediatype());
+        movie.setPoster(movieResult.getPoster());
+        movie.setRating(movieResult.getRating());
+        movie.setReleaseYear(movieResult.getReleaseYear());
+        movie.setRuntime(movieResult.getRuntime());
+        movie.setShowCast(movieResult.getShowCast());
+        movie.setShowId(movieResult.getShowId());
+        movie.setShowTitle(movieResult.getShowTitle());
+        movie.setSummary(movieResult.getSummary());
+        movie.setUnit(movieResult.getUnit());
+        movie.setFavorite(isFavorite);
+        return movie;
     }
 }

@@ -3,14 +3,16 @@ package com.vishesh.moviesexplorer.core;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by vishesh on 20/6/17.
  */
-@Entity
-public class Movie {
+@Entity(tableName = "movies")
+public class Movie implements Parcelable {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int uid;
 
     @ColumnInfo(name = "unit")
@@ -37,6 +39,38 @@ public class Movie {
     private Integer mediatype;
     @ColumnInfo(name = "runtime")
     private String runtime;
+    @ColumnInfo(name = "is_favorite")
+    private boolean isFavorite;
+
+    public Movie() {
+
+    }
+
+    protected Movie(Parcel in) {
+        uid = in.readInt();
+        showTitle = in.readString();
+        releaseYear = in.readString();
+        rating = in.readString();
+        category = in.readString();
+        showCast = in.readString();
+        director = in.readString();
+        summary = in.readString();
+        poster = in.readString();
+        runtime = in.readString();
+        isFavorite = in.readByte() != 0;
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public Integer getUnit() {
         return unit;
@@ -140,5 +174,33 @@ public class Movie {
 
     public void setUid(int uid) {
         this.uid = uid;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(uid);
+        dest.writeString(showTitle);
+        dest.writeString(releaseYear);
+        dest.writeString(rating);
+        dest.writeString(category);
+        dest.writeString(showCast);
+        dest.writeString(director);
+        dest.writeString(summary);
+        dest.writeString(poster);
+        dest.writeString(runtime);
+        dest.writeByte((byte) (isFavorite ? 1 : 0));
     }
 }
