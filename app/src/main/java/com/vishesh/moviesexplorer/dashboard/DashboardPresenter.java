@@ -1,5 +1,6 @@
 package com.vishesh.moviesexplorer.dashboard;
 
+import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 import com.vishesh.moviesexplorer.core.Movie;
 
 import java.util.ArrayList;
@@ -12,11 +13,8 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.HttpException;
 
-/**
- * Created by vishesh on 19/6/17.
- */
+
 class DashboardPresenter {
 
     private MovieService movieService;
@@ -52,12 +50,23 @@ class DashboardPresenter {
                         view.hideSearchLoader();
                         if (e instanceof HttpException) {
                             HttpException httpException = (HttpException) e;
-                            if (httpException.code() == 404) {
+                            if (httpException.code() >= 400) {
                                 view.showError(httpException.message());
                             }
                         }
                     }
                 });
+    }
+
+    public void setView(DashboardView view) {
+        this.view = view;
+    }
+
+    void onDestroy() {
+        if (moviesDisposable != null) {
+            moviesDisposable.dispose();
+        }
+        view = null;
     }
 
     private List<Movie> convertMovieResultsToMovies(List<MovieResult> movieResults) {
@@ -66,10 +75,6 @@ class DashboardPresenter {
             movies.add(movieResult.convertMovieResultToMovie(movieResult, false));
         }
         return movies;
-    }
-
-    void onDestroy() {
-        moviesDisposable.dispose();
     }
 
     interface DashboardView {
@@ -81,9 +86,5 @@ class DashboardPresenter {
         void showSearchLoader();
 
         void hideSearchLoader();
-    }
-
-    public void setView(DashboardView view) {
-        this.view = view;
     }
 }

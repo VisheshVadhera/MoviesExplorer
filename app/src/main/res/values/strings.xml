@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">MoviesExplorer</string>
-    <string name="title_activity_dashboard">Dashboard2Activity</string>
+    <string name="app_name">Movies Explorer</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
     <string name="action_settings">Settings</string>
 
     <string name="tab_search_results_title">Results</string>
     <string name="tab_favorites_title">Favorites</string>
-    <string name="title_activity_movie_details">MovieDetailsActivity</string>
+    <string name="title_activity_movie_details">Movie Details </string>
 </resources>

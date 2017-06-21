@@ -8,24 +8,25 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableEmitter;
-import io.reactivex.CompletableObserver;
 import io.reactivex.CompletableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.exceptions.Exceptions;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-/**
- * Created by vishesh on 20/6/17.
- */
+
 public class MovieDetailsPresenter {
 
     private MovieDetailsView view;
     private final MovieDatabase movieDatabase;
+    private Movie movie;
+    private Disposable disposable;
 
     @Inject
-    public MovieDetailsPresenter(MovieDatabase movieDatabase) {
+    MovieDetailsPresenter(MovieDatabase movieDatabase) {
         this.movieDatabase = movieDatabase;
     }
 
@@ -33,32 +34,44 @@ public class MovieDetailsPresenter {
         this.view = view;
     }
 
-    void onFavoriteButtonClicked(Movie movie) {
+    void onFavoriteButtonClicked() {
         if (!movie.isFavorite()) {
             view.setButtonToFavorite();
             movie.setFavorite(true);
-            from(movieDatabase.movieDao(), movie)
+            disposable = from(movieDatabase.movieDao(), movie)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(new CompletableObserver() {
+                    .subscribe(new Action() {
                         @Override
-                        public void onSubscribe(@NonNull Disposable d) {
-
+                        public void run() throws Exception {
+                            //No op
                         }
-
+                    }, new Consumer<Throwable>() {
                         @Override
-                        public void onComplete() {
-                            view.showMessage("Added to fav!");
-                        }
-
-                        @Override
-                        public void onError(@NonNull Throwable e) {
+                        public void accept(@NonNull Throwable throwable) throws Exception {
+                            view.showMessage("Unable to perform operation");
                         }
                     });
+        } else {
+            view.showMessage("Movie has already been favourited!");
         }
     }
 
+    void initialize(Movie movie) {
+        this.movie = movie;
+        view.initializeView(movie, movie.isFavorite());
+    }
+
+    void onDestroy() {
+        if (disposable != null) {
+            disposable.dispose();
+        }
+        view = null;
+    }
+
     interface MovieDetailsView {
+
+        void initializeView(Movie movie, boolean disableFavButton);
 
         void setButtonToFavorite();
 

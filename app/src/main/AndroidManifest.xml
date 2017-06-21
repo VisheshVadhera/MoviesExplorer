@@ -23,12 +23,8 @@
         <activity
             android:name=".moviedetails.MovieDetailsActivity"
             android:label="@string/title_activity_movie_details"
-            android:parentActivityName=".dashboard.DashboardActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.vishesh.moviesexplorer.dashboard.DashboardActivity" />
         </activity>
     </application>
 

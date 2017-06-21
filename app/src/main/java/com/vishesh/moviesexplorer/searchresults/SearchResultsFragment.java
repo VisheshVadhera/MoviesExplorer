@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.vishesh.moviesexplorer.MainApplication;
@@ -46,12 +45,17 @@ public class SearchResultsFragment
         return new SearchResultsFragment();
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((MainApplication) getActivity().getApplication()).getInjector().inject(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search_results, container, false);
         unbinder = ButterKnife.bind(this, view);
-        ((MainApplication) getActivity().getApplication()).getInjector().inject(this);
         initRecyclerView();
         return view;
     }
@@ -62,12 +66,6 @@ public class SearchResultsFragment
         searchResultsPresenter.setView(this);
     }
 
-    private void initRecyclerView() {
-        moviesAdapter = new MoviesAdapter(getActivity(), this);
-        recyclerViewResults.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerViewResults.setAdapter(moviesAdapter);
-    }
-
     public void addSearchResults(List<Movie> movies) {
         moviesAdapter.addMovieResults(movies);
     }
@@ -76,6 +74,7 @@ public class SearchResultsFragment
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        searchResultsPresenter.onDestroy();
     }
 
     @Override
@@ -90,11 +89,6 @@ public class SearchResultsFragment
         startActivity(intent);
     }
 
-    @Override
-    public void showMessage(String message) {
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-    }
-
     public void hideLoader() {
         spinKitView.setVisibility(View.GONE);
         recyclerViewResults.setVisibility(View.VISIBLE);
@@ -103,5 +97,11 @@ public class SearchResultsFragment
     public void showLoader() {
         recyclerViewResults.setVisibility(View.GONE);
         spinKitView.setVisibility(View.VISIBLE);
+    }
+
+    private void initRecyclerView() {
+        moviesAdapter = new MoviesAdapter(getActivity(), this);
+        recyclerViewResults.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerViewResults.setAdapter(moviesAdapter);
     }
 }

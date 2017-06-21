@@ -65,6 +65,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     }
 
     void addMovieResults(List<Movie> extraMovies) {
+        movies.clear();
         movies.addAll(extraMovies);
         notifyDataSetChanged();
     }

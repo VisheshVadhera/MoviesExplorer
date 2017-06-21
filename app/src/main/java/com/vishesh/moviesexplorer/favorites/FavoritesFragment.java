@@ -23,10 +23,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-/**
- * Created by vishesh on 19/6/17.
- */
-
 public class FavoritesFragment
         extends Fragment
         implements MoviesAdapter.ViewHolder.ClickListener,
@@ -41,6 +37,16 @@ public class FavoritesFragment
     @Inject
     FavoritesPresenter favoritesPresenter;
 
+    public static FavoritesFragment newInstance() {
+        return new FavoritesFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((MainApplication) getActivity().getApplication()).getInjector().inject(this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -48,7 +54,6 @@ public class FavoritesFragment
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_favorites, container, false);
         unbinder = ButterKnife.bind(this, view);
-        ((MainApplication) getActivity().getApplication()).getInjector().inject(this);
         return view;
     }
 
@@ -57,17 +62,6 @@ public class FavoritesFragment
         super.onViewCreated(view, savedInstanceState);
         favoritesPresenter.setView(this);
         favoritesPresenter.initialize();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-        favoritesPresenter.onDestroy();
-    }
-
-    public static FavoritesFragment newInstance() {
-        return new FavoritesFragment();
     }
 
     @Override
@@ -81,5 +75,12 @@ public class FavoritesFragment
         moviesAdapter = new MoviesAdapter(getActivity(), movies, this);
         recyclerViewFavorites.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewFavorites.setAdapter(moviesAdapter);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+        favoritesPresenter.onDestroy();
     }
 }

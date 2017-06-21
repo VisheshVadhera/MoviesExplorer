@@ -13,9 +13,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
-/**
- * Created by vishesh on 21/6/17.
- */
+
 public class FavoritesPresenter {
 
     private FavoritesView view;
@@ -46,7 +44,10 @@ public class FavoritesPresenter {
     }
 
     void onDestroy() {
-        moviesDisposable.dispose();
+        if (moviesDisposable != null) {
+            moviesDisposable.dispose();
+        }
+        view = null;
     }
 
     interface FavoritesView {

@@ -36,7 +36,6 @@ public class DashboardActivity
     DashboardPresenter presenter;
 
     private SearchView searchView;
-
     private SectionsPagerAdapter sectionsPagerAdapter;
     private Unbinder unbinder;
 
@@ -46,15 +45,14 @@ public class DashboardActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((MainApplication) getApplication()).getInjector().inject(this);
         setContentView(R.layout.activity_dashboard);
         unbinder = ButterKnife.bind(this);
-        ((MainApplication) getApplication()).getInjector().inject(this);
         presenter.setView(this);
         initializeTabs();
     }
 
-    void initializeTabs() {
-
+    private void initializeTabs() {
         sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         sectionsPagerAdapter.addFragment(SEARCH_RESULTS_FRAGMENT_POSITION, SearchResultsFragment.newInstance());
         sectionsPagerAdapter.addFragment(FAVORITES_FRAGMENT_POSITION, FavoritesFragment.newInstance());

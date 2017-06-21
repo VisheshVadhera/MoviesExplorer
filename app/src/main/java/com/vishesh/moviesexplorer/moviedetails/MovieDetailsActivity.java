@@ -28,8 +28,6 @@ public class MovieDetailsActivity
         extends AppCompatActivity
         implements MovieDetailsPresenter.MovieDetailsView {
 
-    private static final String EXTRA_MOVIE = "EXTRA_MOVIE";
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.image_movie_poster)
@@ -53,11 +51,12 @@ public class MovieDetailsActivity
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
-    private Movie movie;
-    private Unbinder unbinder;
-
     @Inject
     MovieDetailsPresenter movieDetailsPresenter;
+
+    private static final String EXTRA_MOVIE = "EXTRA_MOVIE";
+
+    private Unbinder unbinder;
 
     public static Intent createIntent(Context context, Movie movie) {
         Intent intent = new Intent(context, MovieDetailsActivity.class);
@@ -68,21 +67,33 @@ public class MovieDetailsActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((MainApplication) getApplication()).getInjector().inject(this);
         setContentView(R.layout.activity_movie_details);
         unbinder = ButterKnife.bind(this);
-        ((MainApplication) getApplication()).getInjector().inject(this);
         movieDetailsPresenter.setView(this);
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(true);
         }
 
-        movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
-        initializeViews();
+        movieDetailsPresenter.initialize((Movie) getIntent().getParcelableExtra(EXTRA_MOVIE));
     }
 
-    private void initializeViews() {
+    @OnClick(R.id.fab)
+    void onClick() {
+        movieDetailsPresenter.onFavoriteButtonClicked();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
+        movieDetailsPresenter.onDestroy();
+    }
+
+    @Override
+    public void initializeView(Movie movie, boolean disableFavButton) {
         textRuntime.setText(movie.getRuntime());
         textSummary.setText(movie.getSummary());
         textDirector.setText(movie.getDirector());
@@ -96,30 +107,15 @@ public class MovieDetailsActivity
                 .load(movie.getPoster())
                 .into(imageMoviePoster);
 
-        initializeFab();
-    }
-
-    private void initializeFab() {
         IconicsDrawable drawable = new IconicsDrawable(this)
                 .sizeDp(16);
 
-        if (movie.isFavorite()) {
+        if (disableFavButton) {
             fab.setImageDrawable(drawable.icon(GoogleMaterial.Icon.gmd_favorite));
             fab.setEnabled(false);
         } else {
             fab.setImageDrawable(drawable.icon(GoogleMaterial.Icon.gmd_favorite_border));
         }
-    }
-
-    @OnClick(R.id.fab)
-    void onClick() {
-        movieDetailsPresenter.onFavoriteButtonClicked(movie);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unbinder.unbind();
     }
 
     @Override
@@ -132,7 +128,7 @@ public class MovieDetailsActivity
     }
 
     @Override
-    public void showMessage(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    public void showMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
