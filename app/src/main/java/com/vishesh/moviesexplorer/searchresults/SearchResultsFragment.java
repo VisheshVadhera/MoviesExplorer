@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.vishesh.moviesexplorer.MainApplication;
 import com.vishesh.moviesexplorer.R;
 import com.vishesh.moviesexplorer.core.Movie;
@@ -32,6 +33,8 @@ public class SearchResultsFragment
 
     @BindView(R.id.recycler_view_results)
     RecyclerView recyclerViewResults;
+    @BindView(R.id.view_loader)
+    SpinKitView spinKitView;
 
     private Unbinder unbinder;
     private MoviesAdapter moviesAdapter;
@@ -49,7 +52,7 @@ public class SearchResultsFragment
         View view = inflater.inflate(R.layout.fragment_search_results, container, false);
         unbinder = ButterKnife.bind(this, view);
         ((MainApplication) getActivity().getApplication()).getInjector().inject(this);
-        initRecyclerAdapter();
+        initRecyclerView();
         return view;
     }
 
@@ -59,7 +62,7 @@ public class SearchResultsFragment
         searchResultsPresenter.setView(this);
     }
 
-    private void initRecyclerAdapter() {
+    private void initRecyclerView() {
         moviesAdapter = new MoviesAdapter(getActivity(), this);
         recyclerViewResults.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerViewResults.setAdapter(moviesAdapter);
@@ -90,5 +93,15 @@ public class SearchResultsFragment
     @Override
     public void showMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void hideLoader() {
+        spinKitView.setVisibility(View.GONE);
+        recyclerViewResults.setVisibility(View.VISIBLE);
+    }
+
+    public void showLoader() {
+        recyclerViewResults.setVisibility(View.GONE);
+        spinKitView.setVisibility(View.VISIBLE);
     }
 }

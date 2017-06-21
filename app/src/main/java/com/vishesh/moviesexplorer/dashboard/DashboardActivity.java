@@ -27,8 +27,6 @@ public class DashboardActivity
         extends AppCompatActivity
         implements DashboardPresenter.DashboardView {
 
-    public static final int SEARCH_RESULTS_FRAGMENT_POSITION = 0;
-    public static final int FAVORITES_FRAGMENT_POSITION = 1;
     @BindView(R.id.tabs)
     TabLayout tabs;
     @BindView(R.id.view_pager_dashboard)
@@ -38,8 +36,12 @@ public class DashboardActivity
     DashboardPresenter presenter;
 
     private SearchView searchView;
+
     private SectionsPagerAdapter sectionsPagerAdapter;
     private Unbinder unbinder;
+
+    private static final int SEARCH_RESULTS_FRAGMENT_POSITION = 0;
+    private static final int FAVORITES_FRAGMENT_POSITION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +97,7 @@ public class DashboardActivity
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+        presenter.onDestroy();
     }
 
     @Override
@@ -107,6 +110,20 @@ public class DashboardActivity
     @Override
     public void showError(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showSearchLoader() {
+        SearchResultsFragment searchResultsFragment = (SearchResultsFragment)
+                sectionsPagerAdapter.getItem(SEARCH_RESULTS_FRAGMENT_POSITION);
+        searchResultsFragment.showLoader();
+    }
+
+    @Override
+    public void hideSearchLoader() {
+        SearchResultsFragment searchResultsFragment = (SearchResultsFragment)
+                sectionsPagerAdapter.getItem(SEARCH_RESULTS_FRAGMENT_POSITION);
+        searchResultsFragment.hideLoader();
     }
 
 }

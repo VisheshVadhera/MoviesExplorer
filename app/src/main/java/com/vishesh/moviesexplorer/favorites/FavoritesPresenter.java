@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -19,19 +20,19 @@ public class FavoritesPresenter {
 
     private FavoritesView view;
     private final MovieDatabase movieDatabase;
+    private Disposable moviesDisposable;
 
     @Inject
-    public FavoritesPresenter(MovieDatabase movieDatabase) {
+    FavoritesPresenter(MovieDatabase movieDatabase) {
         this.movieDatabase = movieDatabase;
     }
-
 
     public void setView(FavoritesView view) {
         this.view = view;
     }
 
-    public void initialize() {
-        movieDatabase
+    void initialize() {
+        moviesDisposable = movieDatabase
                 .movieDao()
                 .getAllMovies()
                 .subscribeOn(Schedulers.io())
@@ -44,7 +45,11 @@ public class FavoritesPresenter {
                 });
     }
 
-    public interface FavoritesView {
+    void onDestroy() {
+        moviesDisposable.dispose();
+    }
+
+    interface FavoritesView {
 
         void setFavoriteMovies(List<Movie> movies);
     }

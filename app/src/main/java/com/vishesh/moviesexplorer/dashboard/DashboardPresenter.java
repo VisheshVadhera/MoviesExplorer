@@ -17,21 +17,21 @@ import retrofit2.HttpException;
 /**
  * Created by vishesh on 19/6/17.
  */
-
 class DashboardPresenter {
 
     private MovieService movieService;
     private DashboardView view;
+    private DisposableSingleObserver<List<Movie>> moviesDisposable;
 
     @Inject
-    public DashboardPresenter(MovieService movieService) {
+    DashboardPresenter(MovieService movieService) {
         this.movieService = movieService;
     }
 
     void searchMovies(String query) {
-        //TODO show loader.
+        view.showSearchLoader();
 
-        movieService.searchMoviesByDirector(query)
+        moviesDisposable = movieService.searchMoviesByDirector(query)
                 .map(new Function<List<MovieResult>, List<Movie>>() {
                     @Override
                     public List<Movie> apply(@NonNull List<MovieResult> movieResults) throws Exception {
@@ -43,12 +43,13 @@ class DashboardPresenter {
                 .subscribeWith(new DisposableSingleObserver<List<Movie>>() {
                     @Override
                     public void onSuccess(@NonNull List<Movie> movies) {
-                        //TODO hide loader
+                        view.hideSearchLoader();
                         view.showSearchResult(movies);
                     }
 
                     @Override
                     public void onError(@NonNull Throwable e) {
+                        view.hideSearchLoader();
                         if (e instanceof HttpException) {
                             HttpException httpException = (HttpException) e;
                             if (httpException.code() == 404) {
@@ -67,11 +68,19 @@ class DashboardPresenter {
         return movies;
     }
 
+    void onDestroy() {
+        moviesDisposable.dispose();
+    }
+
     interface DashboardView {
 
         void showSearchResult(List<Movie> movieResult);
 
         void showError(String message);
+
+        void showSearchLoader();
+
+        void hideSearchLoader();
     }
 
     public void setView(DashboardView view) {

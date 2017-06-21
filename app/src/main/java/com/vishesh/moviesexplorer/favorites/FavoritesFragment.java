@@ -63,6 +63,7 @@ public class FavoritesFragment
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        favoritesPresenter.onDestroy();
     }
 
     public static FavoritesFragment newInstance() {
