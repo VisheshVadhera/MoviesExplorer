@@ -62,4 +62,7 @@ dependencies {
     compile 'com.mikepenz:google-material-typeface:3.0.1.0.original@aar'
     compile 'com.mikepenz:iconics-core:2.8.2@aar'
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
+
+    //RxBindings
+    compile 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.0.0'
 }
